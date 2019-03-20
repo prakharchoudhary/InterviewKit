@@ -7,36 +7,30 @@ import sys
 # Complete the substrCount function below.
 
 
-def check_palindrome(s):
-    flag = 1
-    first = 0
-    last = len(s) - 1
-    carrier = None
-    # print(s)
-    while first <= last:
-        if s[first] != s[last]:
-            flag = 0
-            break
-        if carrier is not None:
-            if (s[first] != carrier or s[last] != carrier) and first != last:
-                flag = 0
-                break
-        elif carrier is None:
-            carrier = s[first]
-        first += 1
-        last -= 1
-    return flag
-
-
 def substrCount(n, s):
+    tuples = []
+    curr = None
     count = 0
+
     for i in range(n):
-        for j in range(i + 2, n + 1):
-            if check_palindrome(s[i: j]):
-                # print(s[i:j])
-                count += 1
-    count += n
-    return count
+        if s[i] == curr:
+            curr += 1
+        else:
+            if curr is not None:
+                tuples.append((curr, count))
+            curr = s[i]
+            count = 1
+    tuples.append((curr, count))
+
+    ans = 0
+
+    for i in tuples:
+        ans += (i[1] * (i[1] + 1)) // 2
+
+    for i in range(1, len(tuples) - 1):
+        if tuples[i - 1][0] == tuples[i + 1][0] and tuples[i][1] == 1:
+            ans += min(tuples[i - 1][1], tuples[i + 1][1])
+    return ans
 
 if __name__ == '__main__':
     # fptr = open(os.environ['OUTPUT_PATH'], 'w')
@@ -45,7 +39,7 @@ if __name__ == '__main__':
 
     s = input()
 
-    print("*" * 200, "\n")
+    # print("*" * 200, "\n")
 
     result = substrCount(n, s)
 
